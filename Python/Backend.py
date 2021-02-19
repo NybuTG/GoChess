@@ -1,4 +1,5 @@
 import pprint
+import itertools
 
 class ProcessFen:
     # Okay jesus this will need some explaining for later me..
@@ -18,6 +19,18 @@ class ProcessFen:
     def __init__(self, fenString):
         self.fenString = fenString
 
+    def stringToList(self, string):
+
+        outp = []
+        for i in range(len(string)):
+            
+            if string[i].isdigit():
+                outp.append(int(string[i]))
+            else:
+                outp.append(string[i])
+            
+        return outp
+
     def fenToBoard(self):
         # Split that long string into segments
         steps = self.fenString.split()
@@ -28,9 +41,13 @@ class ProcessFen:
         for i in range(len(board)):
             board[i] = [char for char in board[i]]
 
+        layout = board
+        layout = list(itertools.chain.from_iterable(layout))
+        layout = self.stringToList(layout)
+
         # Return the payload with data
         return {
-            "board": board,
+            "board": layout,
             "turn": steps[1],
             "canCastle": steps[2],
             "canEnPassant": steps[3],
@@ -39,8 +56,8 @@ class ProcessFen:
         }
 
 if __name__ == "__main__":
-    fen = ProcessFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1")
-    pprint.pprint(fen.fenToBoard())
+    fen = ProcessFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq e3 0 1")
+    print(fen.fenToBoard()["board"])
                  
 
         
